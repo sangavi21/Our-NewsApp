@@ -22,7 +22,6 @@ UpdateComments: function(t)
        success: function(message)
              {
                 console.log(newsObject);
-               alert("Movie updated");
                this.props.onupdate(newsObject.publishedAt, newsObject.comments);
 
              }.bind(this),
@@ -57,9 +56,11 @@ handleDelete: function()
 
 render : function()
 {
+  console.log(this.props.valuedata+" "+this.props.valuedata.publishedAt);
   var str=this.props.valuedata.publishedAt;
+  console.log(str);
    var ID='';
-   for(var i=0;i<str.length;++i){
+   for(var i=0;i<str.length;i++){
      if(str.charAt(i)==='-'||str.charAt(i)===':'){
        continue;
      }

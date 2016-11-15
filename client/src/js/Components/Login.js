@@ -37,7 +37,7 @@ render : function(){
       <form>
         <input type="text" name="user" placeholder="Username" />
         <input type="password" name="pass" placeholder="Password" />
-        <input type="submit" name="login" className="login login-submit" value="login" onClick={this.check} />
+        <input type="submit" name="login" className="login login-submit" value="Submit" onClick={this.check} />
       </form>
 
     </div>

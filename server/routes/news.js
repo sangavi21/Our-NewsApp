@@ -3,7 +3,7 @@ var router = express.Router();
 
 var news=require('../models/news');
 router.route("/add")
-.post(function(req,res) {
+.post(isLoggedIn,function(req,res) {
   if(req.body) {
   var newsvar=new news();
   newsvar.author=req.body.author;

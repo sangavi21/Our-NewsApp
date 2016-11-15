@@ -30,7 +30,7 @@ UpdateComments : function(t)
 },*/
 handleAddNews: function()
  {
-  console.log("added clicked")
+  console.log("added clicked");
    var newsInfo=this.props.valuedata;
    console.log(newsInfo);
    $.ajax({
@@ -38,10 +38,10 @@ handleAddNews: function()
    type: 'POST',
   //dataType: 'JSON',
    data : newsInfo,
-   success: function(data)
+   success: function(msg)
    {
+     alert(msg);
      console.log("inside success");
-
 
    }.bind(this),
    error: function(err)

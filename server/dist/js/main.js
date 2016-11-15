@@ -26178,7 +26178,6 @@ UpdateComments: function(t)
        success: function(message)
              {
                 console.log(newsObject);
-               alert("Movie updated");
                this.props.onupdate(newsObject.publishedAt, newsObject.comments);
 
              }.bind(this),
@@ -26213,9 +26212,11 @@ handleDelete: function()
 
 render : function()
 {
+  console.log(this.props.valuedata+" "+this.props.valuedata.publishedAt);
   var str=this.props.valuedata.publishedAt;
+  console.log(str);
    var ID='';
-   for(var i=0;i<str.length;++i){
+   for(var i=0;i<str.length;i++){
      if(str.charAt(i)==='-'||str.charAt(i)===':'){
        continue;
      }
@@ -26336,7 +26337,7 @@ retrieveData  : function() {
    success: function(data1)
    {
      this.setState({mongodata:Object.values(data1)});
-     console.log("inside success");
+     console.log("inside success"+data1);
 
     //  console.log(JSON.stringify(data1));
    }.bind(this),
@@ -26515,16 +26516,16 @@ module.exports=FavFinancial;
 },{"./Fcomponent.js":240,"react":232,"react-dom":51}],240:[function(require,module,exports){
 var React = require('react');
 var FNewsBox = require('./FNewsBox');
-var ContainerComponent = React.createClass({displayName: "ContainerComponent",
+var FComponent = React.createClass({displayName: "FComponent",
 
 render: function (){
   var  updateDetails=this.props.onupdateUp;
   var  deleteDetails=this.props.ondeleteDel;
- var newsarr=this.props.newsdata.map(function(news){
+  console.log(this.props.newsdata);
+ var newsarr=this.props.newsdata.map(function(newscontent){
  return(
       React.createElement(FNewsBox, {
-       valuedata: news, 
-       key: news.title, 
+       valuedata: newscontent, 
        ondelete: deleteDetails, 
        onupdate: updateDetails
        }
@@ -26538,7 +26539,7 @@ render: function (){
  );
 }
 });
-module.exports=ContainerComponent;
+module.exports=FComponent;
 },{"./FNewsBox":236,"react":232}],241:[function(require,module,exports){
 var React = require('react');
 
@@ -26579,7 +26580,7 @@ render : function(){
       React.createElement("form", null, 
         React.createElement("input", {type: "text", name: "user", placeholder: "Username"}), 
         React.createElement("input", {type: "password", name: "pass", placeholder: "Password"}), 
-        React.createElement("input", {type: "submit", name: "login", className: "login login-submit", value: "login", onClick: this.check})
+        React.createElement("input", {type: "submit", name: "login", className: "login login-submit", value: "Submit", onClick: this.check})
       )
 
     )
@@ -26610,6 +26611,7 @@ React.createElement("div", {className: "navbar navbar-fixed-top"},
      React.createElement("li", null, React.createElement(Link, {to: "/bbc"}, "BBC NEWS")), 
      React.createElement("li", null, React.createElement(Link, {to: "/financial"}, "FINANCIAL NEWS")), 
      React.createElement("li", null, React.createElement(Link, {to: "/espn"}, "ESPN NEWS")), 
+     React.createElement("li", null, React.createElement(Link, {to: "/Login"}, "Login")), 
      React.createElement("li", null, 
      React.createElement("a", {href: "/favouritenews", className: "dropdown-toggle", "data-toggle": "dropdown"}, "FAVOURITE NEWS", React.createElement("strong", {className: "caret"})), 
 
@@ -26686,7 +26688,7 @@ UpdateComments : function(t)
 },*/
 handleAddNews: function()
  {
-  console.log("added clicked")
+  console.log("added clicked");
    var newsInfo=this.props.valuedata;
    console.log(newsInfo);
    $.ajax({
@@ -26694,10 +26696,10 @@ handleAddNews: function()
    type: 'POST',
   //dataType: 'JSON',
    data : newsInfo,
-   success: function(data)
+   success: function(msg)
    {
+     alert(msg);
      console.log("inside success");
-
 
    }.bind(this),
    error: function(err)
@@ -26764,6 +26766,193 @@ return (
 
 module.exports=MovieBox;
 },{"react":232}],244:[function(require,module,exports){
+var React = require ('react');
+var Newsdatacomp = require ('./Newsdatacomp');
+var NewsProviderData=React.createClass({displayName: "NewsProviderData",
+  getInitialState: function()
+  {
+    return{
+      prodata:[],
+      showdata: false
+
+    };
+  },
+  handleNewsProviderdatahide:function(){
+      this.setState({ showdata: false });
+      console.log("seting false")
+  },
+  handleNewsProviderdata:function(){
+
+    console.log("Inside"+this.props.data.id);
+    this.setState({ showdata: true });
+    console.log("seting true");
+    $.ajax({
+      url:"https://newsapi.org/v1/articles?source="+this.props.data.id+"&apiKey=1f61ef6cd8e840a598117f89237d56ca",
+      type: 'GET',
+      dataType:'JSON',
+
+      success: function(data1)
+      {
+
+        console.log(data1.articles);
+        this.setState({prodata:data1.articles});
+
+        //console.log(prodata.title);
+
+      }.bind(this),
+      error:function(err)
+      {
+        console.log(err);
+      }.bind(this)
+    });
+
+  },
+
+  render:function(){
+
+
+    return (
+
+      React.createElement("div", {className: "jumbotron"}, 
+
+        React.createElement("div", {className: "container"}, 
+                  React.createElement("div", {className: "row "}, 
+                      React.createElement("div", {className: "col-xs-4 "}, 
+                          React.createElement("a", {id: "providersimg", href: this.props.data.url}, " ", React.createElement("img", {className: "thumbnail", id: "poster", src: this.props.data.urlsToLogos.small}))
+
+                      ), 
+                      React.createElement("div", {className: "col-xs-8 "}, 
+                      React.createElement("h2", null, this.props.data.name), 
+                      React.createElement("button", {className: "btn btn-default", onClick: this.handleNewsProviderdata}, "Show"), 
+                        React.createElement("button", {className: "btn btn-success", onClick: this.handleNewsProviderdatahide}, "Hide")
+                      )
+
+                  )
+   ), 
+   React.createElement("div", null, 
+    this.state.showdata ? React.createElement(Newsdatacomp, {providerdata: this.state.prodata}) : null
+   )
+
+)
+    )
+  }
+})
+module.exports=NewsProviderData;
+},{"./Newsdatacomp":247,"react":232}],245:[function(require,module,exports){
+var React=require('react');
+var ReactDOM=require('react-dom');
+var NewsProviderData = require('./NewsProviderData');
+var NewsProviderscomp=React.createClass({displayName: "NewsProviderscomp",
+  getnewsproviders:function(){
+    $.ajax({
+      url:" https://newsapi.org/v1/sources?language=en",
+      type: 'GET',
+      dataType:'JSON',
+
+      success: function(data1)
+      {
+
+        console.log(data1);
+        this.setState({data:data1.sources});
+        console.log(this.state.data.id);
+
+      }.bind(this),
+      error:function(err)
+      {
+        console.log(err);
+      }.bind(this)
+    });
+
+  },
+  getInitialState: function()
+  {
+    return{
+      data:[]
+
+    };
+  },
+
+
+  componentWillMount:function(){
+
+    this.getnewsproviders();
+  },
+    render: function(){
+      var newsproviderdata=this.state.data.map(function(newsprovider){
+              console.log("yes");
+        return(
+          React.createElement(NewsProviderData, {data: newsprovider})
+        )
+      })
+    return (
+      React.createElement("div", null, 
+            React.createElement("h1", null, "News providers", this.state.booleandata), 
+              React.createElement("div", {className: "container"}, 
+                    newsproviderdata
+
+              )
+      )
+    )
+  }
+})
+module.exports=NewsProviderscomp;
+},{"./NewsProviderData":244,"react":232,"react-dom":51}],246:[function(require,module,exports){
+var React = require ('react');
+var Newsdata=React.createClass({displayName: "Newsdata",
+  render:function(){
+    console.log("ins");
+    return (
+
+      React.createElement("div", {className: "jumbotron"}, 
+      React.createElement("div", {className: "container"}, 
+                React.createElement("div", {className: "row "}, 
+                    React.createElement("div", {className: "col-xs-4 "}, 
+                      React.createElement("a", {id: "datazoom", href: this.props.news.url}, " ", React.createElement("img", {className: "thumbnail", id: "poster", src: this.props.news.urlToImage}))
+
+                    ), 
+                    React.createElement("div", {className: "col-xs-8 "}, 
+                    React.createElement("a", {id: "datazoom", href: this.props.news.url}, React.createElement("h4", null, "Title:", this.props.news.title)), 
+                      React.createElement("ul", {className: "list-group"}, 
+                          React.createElement("li", {className: "list-group-item"}, "Description : ", this.props.news.description)
+                      )
+                    )
+                )
+ )
+
+
+)
+    )
+}
+});
+module.exports=Newsdata;
+},{"react":232}],247:[function(require,module,exports){
+var React = require ('react');
+var Newsdata = require ('./Newsdata');
+var Newsdatacomp=React.createClass({displayName: "Newsdatacomp",
+
+
+  render:function(){
+    var newsproviderdata=this.props.providerdata.map(function(newspro){
+
+      return(
+        React.createElement(Newsdata, {news: newspro})
+
+      )
+    })
+
+    return (
+
+
+        React.createElement("div", {className: "container"}, 
+          newsproviderdata
+
+
+)
+    )
+  }
+})
+module.exports=Newsdatacomp;
+},{"./Newsdata":246,"react":232}],248:[function(require,module,exports){
 var React = require('react');
 var ReactDOM=require('react-dom');
 var ContainerComponent=require('./ContainerComponent.js');
@@ -26879,7 +27068,7 @@ error: function(err)
   }
 });
 module.exports = ViewNewsProvider;
-},{"./ContainerComponent.js":235,"react":232,"react-dom":51}],245:[function(require,module,exports){
+},{"./ContainerComponent.js":235,"react":232,"react-dom":51}],249:[function(require,module,exports){
 var React = require('react');
 var ReactDOM=require('react-dom');
 var ContainerComponent=require('./ContainerComponent.js');
@@ -26930,7 +27119,7 @@ var bbc = React.createClass({displayName: "bbc",
   }
 });
 module.exports = bbc;
-},{"./ContainerComponent.js":235,"react":232,"react-dom":51}],246:[function(require,module,exports){
+},{"./ContainerComponent.js":235,"react":232,"react-dom":51}],250:[function(require,module,exports){
 var React = require('react');
 var ReactDOM=require('react-dom');
 var ContainerComponent=require('./ContainerComponent.js');
@@ -26981,7 +27170,7 @@ Espn: function()
   }
 });
 module.exports = espn;
-},{"./ContainerComponent.js":235,"react":232,"react-dom":51}],247:[function(require,module,exports){
+},{"./ContainerComponent.js":235,"react":232,"react-dom":51}],251:[function(require,module,exports){
 var React=require('react');
 var ReactDOM=require('react-dom');
 
@@ -27032,7 +27221,7 @@ render: function(){
 })
 
 module.exports=FavouriteNews;
-},{"./Fcomponent.js":240,"react":232,"react-dom":51}],248:[function(require,module,exports){
+},{"./Fcomponent.js":240,"react":232,"react-dom":51}],252:[function(require,module,exports){
 var React = require('react');
 var ReactDOM=require('react-dom');
 var ContainerComponent=require('./ContainerComponent.js');
@@ -27084,15 +27273,12 @@ FinancialNews: function()
   }
 });
 module.exports = financial;
-},{"./ContainerComponent.js":235,"react":232,"react-dom":51}],249:[function(require,module,exports){
-
-},{}],250:[function(require,module,exports){
+},{"./ContainerComponent.js":235,"react":232,"react-dom":51}],253:[function(require,module,exports){
 var React = require('react');
 var ReactDOM = require('react-dom');
-var {hashHistory, Route ,Router,IndexRoute} = require('react-router');
+var {browserHistory, Route ,Router,IndexRoute} = require('react-router');
 var NavibarChild = require('./Components/NavibarChild.js');
 var ViewNewsProvider= require('./Components/ViewNewsProvider.js');
-var home= require('./Components/home.js');
 var bbc= require('./Components/bbc.js');
 var financial = require('./Components/financial.js');
 var espn= require('./Components/espn.js');
@@ -27100,7 +27286,8 @@ var favouritenews= require('./Components/favouritenews.js');
 var FavBBC= require('./Components/FavBBC.js');
 var FavFinancial = require('./Components/FavFinancial.js');
 var FavESPN= require('./Components/FavESPN.js');
-var Login=require('./Components/Login.js')
+var Login=require('./Components/Login.js');
+var NewsProvidercomp=require('./Components/NewsProvidercomp.js')
 
 var MainComponent = React.createClass({displayName: "MainComponent",
 
@@ -27116,12 +27303,12 @@ var MainComponent = React.createClass({displayName: "MainComponent",
 });
 
 ReactDOM.render(
-  React.createElement(Router, {history: hashHistory}, 
+  React.createElement(Router, {history: browserHistory}, 
 
      React.createElement(Route, {path: "/", component: MainComponent}, 
-    React.createElement(IndexRoute, {component: Login}), 
+    React.createElement(IndexRoute, {component: NewsProvidercomp}), 
      React.createElement(Route, {path: "/ViewNewsProvider", component: ViewNewsProvider}), 
-      React.createElement(Route, {path: "/home", component: home}), 
+      React.createElement(Route, {path: "/home", component: NewsProvidercomp}), 
        React.createElement(Route, {path: "/bbc", component: bbc}), 
         React.createElement(Route, {path: "/financial", component: financial}), 
          React.createElement(Route, {path: "/espn", component: espn}), 
@@ -27132,4 +27319,4 @@ ReactDOM.render(
             React.createElement(Route, {path: "/Login", component: Login})
       )
   ),document.getElementById('app'));
-},{"./Components/FavBBC.js":237,"./Components/FavESPN.js":238,"./Components/FavFinancial.js":239,"./Components/Login.js":241,"./Components/NavibarChild.js":242,"./Components/ViewNewsProvider.js":244,"./Components/bbc.js":245,"./Components/espn.js":246,"./Components/favouritenews.js":247,"./Components/financial.js":248,"./Components/home.js":249,"react":232,"react-dom":51,"react-router":81}]},{},[250]);
+},{"./Components/FavBBC.js":237,"./Components/FavESPN.js":238,"./Components/FavFinancial.js":239,"./Components/Login.js":241,"./Components/NavibarChild.js":242,"./Components/NewsProvidercomp.js":245,"./Components/ViewNewsProvider.js":248,"./Components/bbc.js":249,"./Components/espn.js":250,"./Components/favouritenews.js":251,"./Components/financial.js":252,"react":232,"react-dom":51,"react-router":81}]},{},[253]);

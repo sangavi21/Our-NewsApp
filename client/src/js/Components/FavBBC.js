@@ -47,7 +47,7 @@ retrieveData  : function() {
    success: function(data1)
    {
      this.setState({mongodata:Object.values(data1)});
-     console.log("inside success");
+     console.log("inside success"+data1);
 
     //  console.log(JSON.stringify(data1));
    }.bind(this),

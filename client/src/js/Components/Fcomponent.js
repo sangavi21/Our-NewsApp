@@ -1,15 +1,15 @@
 var React = require('react');
 var FNewsBox = require('./FNewsBox');
-var ContainerComponent = React.createClass({
+var FComponent = React.createClass({
 
 render: function (){
   var  updateDetails=this.props.onupdateUp;
   var  deleteDetails=this.props.ondeleteDel;
- var newsarr=this.props.newsdata.map(function(news){
+  console.log(this.props.newsdata);
+ var newsarr=this.props.newsdata.map(function(newscontent){
  return(
       <FNewsBox
-       valuedata={news}
-       key={news.title}
+       valuedata={newscontent}    
        ondelete={deleteDetails}
        onupdate={updateDetails}
        >
@@ -23,4 +23,4 @@ render: function (){
  );
 }
 });
-module.exports=ContainerComponent;
+module.exports=FComponent;

@@ -18,6 +18,7 @@ var NavibarChild = React.createClass({
      <li><Link to ="/bbc">BBC NEWS</Link></li>
      <li><Link to ="/financial">FINANCIAL NEWS</Link></li>
      <li><Link to ="/espn">ESPN NEWS</Link></li>
+     <li><Link to ="/Login">Login</Link></li>
      <li>
      <a href="/favouritenews" className="dropdown-toggle" data-toggle="dropdown">FAVOURITE NEWS<strong className="caret"></strong></a>
 
